@@ -65,7 +65,7 @@ class ListingsController < ApplicationController
   # GET /listings/1/edit
   def edit
     if current_user.profile != @listing.profile
-      redirect_to profile_path(current_user)
+      redirect_to profile_path(current_user.profile) and return
     end
   end
 
@@ -91,7 +91,7 @@ class ListingsController < ApplicationController
   # PATCH/PUT /listings/1.json
   def update
     if current_user.profile != @listing.profile
-      redirect_to profile_path(current_user)
+      redirect_to profile_path(current_user.profile) and return
     end
     respond_to do |format|
       if @listing.update(listing_params)
@@ -107,6 +107,9 @@ class ListingsController < ApplicationController
   # DELETE /listings/1
   # DELETE /listings/1.json
   def destroy
+    if current_user.profile != @listing.profile
+      redirect_to profile_path(current_user.profile) and return
+    end
     @listing.destroy
     respond_to do |format|
       format.html { redirect_to listings_url, notice: 'Listing was successfully destroyed.' }
