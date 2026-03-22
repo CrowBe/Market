@@ -49,7 +49,13 @@ class ListingsController < ApplicationController
   # GET /listings
   # GET /listings.json
   def index
-    @listings = Listing.search(params[:search], params[:city])
+    scope = Listing.search(params[:search], params[:city])
+    scope = scope.joins(:profile).where.not(profiles: { user_id: current_user.id }) if current_user
+    @pagy, @listings = pagy(scope, items: 12)
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # GET /listings/1

@@ -9,20 +9,14 @@ class Listing < ApplicationRecord
   has_many :favorited, source: :profile, through: :favorites
 
   def self.search(search, city)
-    if search and city
+    scope = all
+    if search.present?
       hobby = Hobby.find_by(name: search)
-      city == [""] ? city = false : city = City.find(city)
-      if hobby and city
-        self.where(hobby_id: hobby, city_id: city)
-      elsif hobby
-        self.where(hobby_id: hobby)
-      elsif city
-        self.where(city_id: city)
-      else
-        Listing.all
-      end
-    else
-      Listing.all
+      scope = scope.where(hobby_id: hobby) if hobby
     end
+    if city.present? && city != [""] && city.to_s != ""
+      scope = scope.where(city_id: city)
+    end
+    scope
   end
 end

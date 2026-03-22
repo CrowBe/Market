@@ -16,3 +16,31 @@
     height: 270px;
     background-color: rgb(251, 252, 253);
   }
+
+// Pagination
+.pagination-desktop {
+  .page-item.active .page-link {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+  }
+  .page-link {
+    color: #17a2b8;
+    &:hover {
+      color: darken(#17a2b8, 10%);
+    }
+  }
+}
+
+#load-more-btn {
+  min-width: 160px;
+  transition: opacity 0.2s ease;
+
+  &.loading {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+#load-more-sentinel {
+  height: 1px;
+}

@@ -1,0 +1,40 @@
+<% listings.each do |listing| %>
+  <%= link_to(listing) do %>
+    <div class="card mb-3 mr-3 col-2 col-md-1 text-dark">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <%= image_tag listing.profile.picture, class: "card-img mt-5 ml-2", alt: "profile picture" if listing.profile.picture.attached? %>
+          <h4 class="text-center mt-4">Hi Im <%= listing.profile.first_name.capitalize %>!</h4>
+        </div>
+        <div class="col-md-8">
+          <div class="card-body ml-3">
+            <h5 class="card-title font-weight-bold"><%= listing.hobby.name.capitalize %></h5>
+            <p class="card-text">Activity Date: <%= listing.date.strftime("%A, %b %d") %></p>
+            <p class="card-text">Activity Location: <%= listing.city.name %></p>
+            <p class="card-text">People Attending:
+              <% spaces_taken = listing.listing_attendees.count %>
+              <% spaces_left = listing.capacity - spaces_taken %>
+              <% case spaces_left %>
+              <% when 0 %>
+                <% remaining = "sorry, there are currently no spaces remaining" %>
+              <% when 1 %>
+                <% remaining = "there is 1 space remaining" %>
+              <% else %>
+                <% remaining = "there are #{spaces_left} spaces remaining" %>
+              <% end %>
+              <% if spaces_taken == 0 %>
+                <span>No one has joined this listing yet. There are <%= listing.capacity %> spaces</span>
+              <% elsif spaces_taken == 1 %>
+                <span><%= spaces_taken %> person is already attending | </span>
+                <span><%= remaining %></span>
+              <% else %>
+                <span><%= spaces_taken %> people are already attending | </span>
+                <span><%= remaining %></span>
+              <% end %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

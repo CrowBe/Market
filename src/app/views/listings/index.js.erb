@@ -1,0 +1,24 @@
+(function() {
+  var container = document.getElementById('listings-container');
+  if (!container) return;
+
+  // Append new cards
+  container.insertAdjacentHTML('beforeend', '<%= j render "listing_cards", listings: @listings %>');
+
+  var loadMoreSection = document.getElementById('load-more-section');
+  if (!loadMoreSection) return;
+
+  <% if @pagy.next %>
+    // Update the load-more button to point to the next page
+    var btn = document.getElementById('load-more-btn');
+    if (btn) {
+      btn.href = '<%= listings_path(search: params[:search], city: params[:city], page: @pagy.next) %>';
+      btn.textContent = 'Load More';
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  <% else %>
+    // No more pages — remove the load-more section and show end message
+    loadMoreSection.innerHTML = '<p class="text-center text-muted my-4">All listings loaded.</p>';
+  <% end %>
+})();
