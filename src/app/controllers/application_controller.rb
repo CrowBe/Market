@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+    include Pagy::Backend
     before_action :sign_up_path
     private
 

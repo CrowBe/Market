@@ -1,57 +1,39 @@
-
 <p id="notice"><%= notice %></p>
+
 <div class="d-flex justify-content-center mb-2">
   <%= form_tag(listings_path, method: :get) do %>
     <%= text_field_tag(:search, params[:search], placeholder: 'Search by hobby...') %>
-    <%= collection_select(:city, params[:id], City.all, :id, :name, prompt: "Location...") %>
-    <%= submit_tag ("Search"), class: "btn btn-info" %>
+    <%= collection_select(:city, params[:city], City.all, :id, :name, prompt: "Location...") %>
+    <%= submit_tag("Search", class: "btn btn-info") %>
   <% end %>
 </div>
 
 <div class="container-fluid">
   <div class="container">
     <h2 class="text-center">Listings</h2>
-  <div class="row">
-    <% @listings.each do |listing| %>
-    <% if listing.profile.user != current_user %>
-    <%= link_to(listing) do %>
-  <div class="card mb-3 mr-3 col-2 col-md-1 text-dark">
-    <div class="row no-gutters">
-     <div class="col-md-4">
-      <%= image_tag listing.profile.picture, class:"card-img mt-5 ml-2", alt:"profile picture" if listing.profile.picture.attached? %>
-      <h4 class="text-center mt-4">Hi Im <%= listing.profile.first_name.capitalize %>!</h4>
-      </div>
-    <div class="col-md-8">
-      <div class="card-body ml-3">
-        <h5 class="card-title font-weight-bold"> <%= listing.hobby.name.capitalize %></h5>
-        <p class="card-text">Activity Date: <%= listing.date.strftime("%A, %b %d") %> </p>
-        <p class="card-text">Activity Location: <%= listing.city.name %></p>
-        <p class="card-text">People Attending: 
-        <% spaces_taken = listing.listing_attendees.count%>
-          <% spaces_left = listing.capacity - spaces_taken %>
-          <% case spaces_left %>
-          <% when 0 %>
-            <% remaining = "sorry, there are currently no spaces remaining"%>
-          <% when 1 %>
-            <% remaining = "there is 1 space remaining"%>
-          <% else %>
-            <% remaining = "there are #{spaces_left} spaces remaining" %>
-          <% end %>
-          <% if spaces_taken == 0 %>
-            <span> No one has joined this listing yet. There are <%= listing.capacity %> spaces</span>
-          <% elsif spaces_taken == 1 %>
-            <span><%= spaces_taken %> person is already attending | </span>
-            <span><%= remaining %></span>
-          <% elsif spaces_taken > 1 %>
-            <span><%= spaces_taken %> people are already attending | </span>
-            <span><%= remaining %></span>
-            <% end %>
-        </p>
-      </div>
+    <div class="row" id="listings-container">
+      <%= render "listing_cards", listings: @listings %>
+    </div>
+
+    <%# Desktop pagination — hidden on mobile %>
+    <div class="d-none d-md-flex justify-content-center mt-4 pagination-desktop">
+      <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+    </div>
+
+    <%# Mobile load-more / infinite scroll — hidden on desktop %>
+    <div class="d-md-none" id="load-more-section">
+      <% if @pagy.next %>
+        <div class="text-center my-4">
+          <%= link_to "Load More",
+                listings_path(search: params[:search], city: params[:city], page: @pagy.next),
+                id: "load-more-btn",
+                class: "btn btn-outline-info btn-lg px-5",
+                data: { remote: true } %>
+        </div>
+        <div id="load-more-sentinel"></div>
+      <% else %>
+        <p class="text-center text-muted my-4">All listings loaded.</p>
+      <% end %>
     </div>
   </div>
 </div>
-
-<% end %>
-<% end %>
-<% end %>

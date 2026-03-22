@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.0'
+# ruby version check disabled
 
 #Bootstrap
 gem 'bootstrap', '~> 4.3.1'
@@ -76,3 +76,5 @@ gem "stripe", "~> 4.16"
 gem "ultrahook", "~> 0.1.5"
 
 gem "forecast_io", "~> 2.0"
+
+gem "pagy", "~> 6.0"
